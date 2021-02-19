@@ -1,0 +1,17 @@
+# Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
+#config/packages/fost_rest.yaml
+
+fos_rest:
+    versioning: true  
+    body_listener: true 
+    routing_loader: false
+    format_listener: 
+      rules:
+        - { path: '^/', priorities: ['json'], fallback_format: json, prefer_extension: false }
+    param_fetcher_listener: true
+    view:
+        view_response_listener: 'force'
+        formats:
+            json: true
+    serializer:
+        serialize_null: true
