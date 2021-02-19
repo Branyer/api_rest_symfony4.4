@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Movie;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -12,6 +11,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\Form\MovieType;
+use App\Entity\Movie;
 
 /**
 * Movie controller
@@ -35,11 +35,25 @@ class MovieController extends AbstractFOSRestController
     }
 
     /**
+     * List all Movies
+     * @Rest\Get("/movies/{id}")
+     * @return Response
+     */
+    public function getMovieByIdAction($id): Response
+    {
+        $repository = $this->getDoctrine()->getRepository(Movie::class);
+        $movie = $repository->find($id);
+         
+        return $movie ? $this->handleView($this->view($movie)) : $this->handleView($this->view(['error' => 'movie not found']));
+    }
+
+
+    /**
      * Create Movie
      * @Rest\Post("/movies")
      * @return Response
      */
-    public function postMovieAction(Request$request)
+    public function postMovieAction(Request $request)
     {
         $movie= new Movie();
         $form=$this->createForm(MovieType::class,$movie);
