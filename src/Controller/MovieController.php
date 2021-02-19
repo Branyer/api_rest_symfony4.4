@@ -65,6 +65,27 @@ class MovieController extends AbstractFOSRestController
     }
 
     /**
+     * List all Movies
+     * @Rest\Delete("/movies/delete/{id}")
+     * @return Response
+     */
+    public function removeMovie($id): Response
+    {
+        $repository = $this->getDoctrine()->getRepository(Movie::class);
+        $movie = $repository->find($id);
+        
+        if($movie) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($movie);
+            $entityManager->flush();
+        }
+
+
+        return $movie ? $this->handleView($this->view(['status'=>'ok'],Response::HTTP_GONE)) : $this->handleView($this->view(['error' => 'movie not found']));
+    }
+
+
+    /**
      * Create Movie
      * @Rest\Post("/movies")
      * @return Response
