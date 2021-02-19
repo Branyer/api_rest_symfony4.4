@@ -47,6 +47,22 @@ class MovieController extends AbstractFOSRestController
         return $movie ? $this->handleView($this->view($movie)) : $this->handleView($this->view(['error' => 'movie not found']));
     }
 
+    /**
+     * List all Movies
+     * @Rest\Put("/movies/edit/{id}")
+     * @return Response
+     */
+    public function editMovie($id, Request $request): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository = $this->getDoctrine()->getRepository(Movie::class);
+        $movie = $repository->find($id);
+        $data=json_decode($request->getContent(),true);
+        $movie->setTitle($data['title']);
+        $entityManager->flush();
+         
+        return $movie ? $this->handleView($this->view(['status'=>'ok'],Response::HTTP_CREATED)) : $this->handleView($this->view(['error' => 'movie not found']));
+    }
 
     /**
      * Create Movie
